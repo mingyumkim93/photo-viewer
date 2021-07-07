@@ -1,135 +1,79 @@
 <template>
   <v-container>
-    <v-row class="text-center">
-      <v-col cols="12">
-        <v-img
-          :src="require('../assets/logo.svg')"
-          class="my-3"
-          contain
-          height="200"
-        />
-      </v-col>
-
-      <v-col class="mb-4">
-        <h1 class="display-2 font-weight-bold mb-3">
-          Welcome to Vuetify V3 Alpha
-        </h1>
-
-        <p class="subheading font-weight-regular">
-          For help and collaboration with other Vuetify developers,
-          <br />please join our online
-          <a href="https://community.vuetifyjs.com" target="_blank"
-            >Discord Community</a
-          >
-        </p>
-      </v-col>
-
-      <v-col class="mb-5" cols="12">
-        <h2 class="headline font-weight-bold mb-5">What's next?</h2>
-
-        <v-row justify="center">
-          <a
-            v-for="(next, i) in whatsNext"
-            :key="i"
-            :href="next.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ next.text }}
-          </a>
-        </v-row>
-      </v-col>
-
-      <v-col class="mb-5" cols="12">
-        <h2 class="headline font-weight-bold mb-5">Important Links</h2>
-
-        <v-row justify="center">
-          <a
-            v-for="(link, i) in importantLinks"
-            :key="i"
-            :href="link.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ link.text }}
-          </a>
-        </v-row>
-      </v-col>
-
-      <v-col class="mb-5" cols="12">
-        <h2 class="headline font-weight-bold mb-5">Ecosystem</h2>
-
-        <v-row justify="center">
-          <a
-            v-for="(eco, i) in ecosystem"
-            :key="i"
-            :href="eco.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ eco.text }}
-          </a>
-        </v-row>
-      </v-col>
-    </v-row>
+    <Swiper
+      :effect="'coverflow'"
+      :grabCursor="true"
+      :centeredSlides="true"
+      :slidesPerView="'auto'"
+      :coverflowEffect="{
+        rotate: 20,
+        stretch: 0,
+        depth: 200,
+        modifier: 1,
+        slideShadows: true,
+      }"
+      :autoplay="{
+        delay: 2500,
+        disableOnInteraction: false,
+      }"
+    >
+      <SwiperSlide v-for="(image, index) in images" :key="index"
+        ><v-img class="image" :src="image"
+      /></SwiperSlide>
+    </Swiper>
   </v-container>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import "swiper/swiper.scss";
+import "swiper/components/effect-coverflow/effect-coverflow.min.css";
+import "swiper/components/pagination/pagination.min.css";
+
+import { computed, defineComponent } from "vue";
+import { Swiper, SwiperSlide } from "swiper/vue";
+import SwiperCore, { EffectCoverflow, Autoplay } from "swiper/core";
+
+SwiperCore.use([EffectCoverflow, Autoplay]);
 
 export default defineComponent({
   name: "HelloWorld",
+  components: { Swiper, SwiperSlide },
+  setup() {
+    const SAMPLE_IMAGES = [
+      "https://images.unsplash.com/photo-1481349518771-20055b2a7b24?ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cmFuZG9tfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80",
+      "https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/minimalist-orange-armando-borges.jpg",
+      "https://images.unsplash.com/photo-1494253109108-2e30c049369b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTB8fHJhbmRvbXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80",
+    ];
 
-  data() {
-    return {
-      ecosystem: [
-        {
-          text: "vuetify-loader",
-          href: "https://github.com/vuetifyjs/vuetify-loader",
-        },
-        {
-          text: "github",
-          href: "https://github.com/vuetifyjs/vuetify",
-        },
-        {
-          text: "awesome-vuetify",
-          href: "https://github.com/vuetifyjs/awesome-vuetify",
-        },
-      ],
-      importantLinks: [
-        {
-          text: "Chat",
-          href: "https://community.vuetifyjs.com",
-        },
-        {
-          text: "Made with Vuetify",
-          href: "https://madewithvuejs.com/vuetify",
-        },
-        {
-          text: "Twitter",
-          href: "https://twitter.com/vuetifyjs",
-        },
-        {
-          text: "Articles",
-          href: "https://medium.com/vuetify",
-        },
-      ],
-      whatsNext: [
-        {
-          text: "Explore components",
-          href: "https://vuetifyjs.com",
-        },
-        {
-          text: "Roadmap",
-          href: "https://vuetifyjs.com/en/introduction/roadmap/",
-        },
-        {
-          text: "Frequently Asked Questions",
-          href: "https://vuetifyjs.com/getting-started/frequently-asked-questions",
-        },
-      ],
-    };
+    const images = computed(() => [...SAMPLE_IMAGES]);
+
+    return { images };
   },
 });
 </script>
+
+<style scoped>
+.v-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-container {
+  width: 100%;
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+.swiper-slide {
+  width: 300px;
+  height: 300px;
+  background: #000;
+}
+
+.image {
+  -webkit-box-reflect: below 1px
+    linear-gradient(transparent, transparent, #0006);
+}
+</style>

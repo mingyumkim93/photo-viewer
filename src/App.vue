@@ -16,11 +16,11 @@ export default defineComponent({
   components: {
     HelloWorld,
   },
-
-  data() {
-    return {
-      //
-    };
-  },
 });
 </script>
+
+<style scoped>
+.v-application {
+  background-color: black;
+}
+</style>
