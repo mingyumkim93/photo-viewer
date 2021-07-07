@@ -13,9 +13,7 @@ import PhotoViewer from "./components/PhotoViewer.vue";
 export default defineComponent({
   name: "App",
 
-  components: {
-    PhotoViewer,
-  },
+  components: { PhotoViewer }
 });
 </script>
 
