@@ -1,7 +1,6 @@
 <template>
   <Swiper
     :effect="'coverflow'"
-    :grabCursor="true"
     :centeredSlides="true"
     :slidesPerView="'auto'"
     :coverflowEffect="{
@@ -16,8 +15,8 @@
       disableOnInteraction: false
     }"
   >
-    <SwiperSlide v-for="(image, index) in images" :key="index">
-      <v-img class="image" :src="image" />
+    <SwiperSlide v-for="image in images" :key="image.id" v-slot="{ isActive }">
+      <Photo :image="image" :isActive="isActive" :removeImage="removeImage" />
     </SwiperSlide>
   </Swiper>
 </template>
@@ -27,18 +26,25 @@ import "swiper/swiper.scss";
 import "swiper/components/effect-coverflow/effect-coverflow.min.css";
 import "swiper/components/pagination/pagination.min.css";
 
-import { defineComponent } from "vue";
+import { defineComponent, PropType } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import SwiperCore, { EffectCoverflow, Autoplay } from "swiper/core";
+import Photo from "./Photo.vue";
+import { Image } from "../types/Image";
 
 SwiperCore.use([EffectCoverflow, Autoplay]);
 
 export default defineComponent({
   name: "PhotoSlider",
-  components: { Swiper, SwiperSlide },
+  components: { Swiper, SwiperSlide, Photo },
   props: {
     images: {
-      type: Array,
+      type: Object as PropType<Image[]>,
+      required: true
+    },
+    removeImage: {
+      // eslint-disable-next-line no-unused-vars
+      type: Function as PropType<(id: number) => void>,
       required: true
     }
   }
