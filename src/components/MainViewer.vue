@@ -3,8 +3,14 @@
     <v-btn class="exit-button" v-if="!isEditMode" icon text @click="toggleEditmode">
       <v-icon color="white">mdi-close</v-icon>
     </v-btn>
-    <PhotoSlider :images="images" :removeImage="removeImage" :isEditMode="isEditMode" />
+    <PhotoSlider
+      :images="images"
+      :removeImage="removeImage"
+      :isEditMode="isEditMode"
+      :toggleEnlargedImage="toggleEnlargedImage"
+    />
     <Controls :handleImageInput="handleImageInput" :isEditMode="isEditMode" :toggleEditmode="toggleEditmode" />
+    <ImageZoom v-if="enlargedImage" :image="enlargedImage" :toggleEnlargedImage="toggleEnlargedImage" />
   </v-container>
 </template>
 
@@ -12,11 +18,12 @@
 import { defineComponent, ref } from "vue";
 import PhotoSlider from "./PhotoSlider.vue";
 import Controls from "./Controls.vue";
+import ImageZoom from "./ImageZoom.vue";
 import { Image } from "../types/Image";
 
 export default defineComponent({
   name: "MainViewer",
-  components: { PhotoSlider, Controls },
+  components: { PhotoSlider, Controls, ImageZoom },
   setup() {
     const { images, handleImageInput, handleImageDragAndDrop, removeImage } = useImages();
     const isEditMode = ref(true);
@@ -24,7 +31,22 @@ export default defineComponent({
       isEditMode.value = !isEditMode.value;
     }
 
-    return { images, handleImageInput, handleImageDragAndDrop, removeImage, isEditMode, toggleEditmode };
+    const enlargedImage = ref<Image | null>(null);
+    //TODO: Think about name
+    function toggleEnlargedImage(image: Image) {
+      enlargedImage.value = enlargedImage.value ? null : image;
+    }
+
+    return {
+      images,
+      handleImageInput,
+      handleImageDragAndDrop,
+      removeImage,
+      isEditMode,
+      toggleEditmode,
+      enlargedImage,
+      toggleEnlargedImage
+    };
   }
 });
 

@@ -1,8 +1,8 @@
 <template>
-  <div @dblclick="enlarge">
+  <v-card width="70%" @dblclick="close" class="image-zoom-container">
     <v-img :src="image.imageURL" />
-    <v-btn v-if="isEditMode && isActive" icon text @click="remove"><v-icon>mdi-delete</v-icon></v-btn>
-  </div>
+    <v-btn icon text @click="close"><v-icon>mdi-close</v-icon></v-btn>
+  </v-card>
 </template>
 
 <script lang="ts">
@@ -10,23 +10,10 @@ import { defineComponent, PropType } from "vue";
 import { Image } from "../types/Image";
 
 export default defineComponent({
-  name: "Photo",
+  name: "ImageZoom",
   props: {
     image: {
       type: Object as PropType<Image>,
-      required: true
-    },
-    isActive: {
-      type: Boolean,
-      required: true
-    },
-    removeImage: {
-      // eslint-disable-next-line no-unused-vars
-      type: Function as PropType<(id: number) => void>,
-      required: true
-    },
-    isEditMode: {
-      type: Boolean,
       required: true
     },
     toggleEnlargedImage: {
@@ -36,21 +23,18 @@ export default defineComponent({
     }
   },
   setup(props) {
-    function remove() {
-      props.removeImage(props.image.id);
-    }
-
-    function enlarge() {
+    function close() {
       props.toggleEnlargedImage(props.image);
     }
-    return { remove, enlarge };
+    return { close };
   }
 });
 </script>
 
 <style scoped>
-.v-img {
-  -webkit-box-reflect: below 1px linear-gradient(transparent, transparent, #0006);
+.image-zoom-container {
+  z-index: 1;
+  position: absolute;
 }
 
 .v-btn {

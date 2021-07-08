@@ -12,7 +12,13 @@
     }"
   >
     <SwiperSlide v-for="image in images" :key="image.id" v-slot="{ isActive }">
-      <Photo :image="image" :isActive="isActive" :removeImage="removeImage" :isEditMode="isEditMode" />
+      <Photo
+        :image="image"
+        :isActive="isActive"
+        :removeImage="removeImage"
+        :isEditMode="isEditMode"
+        :toggleEnlargedImage="toggleEnlargedImage"
+      />
     </SwiperSlide>
   </Swiper>
 </template>
@@ -20,7 +26,6 @@
 <script lang="ts">
 import "swiper/swiper.scss";
 import "swiper/components/effect-coverflow/effect-coverflow.min.css";
-import "swiper/components/pagination/pagination.min.css";
 
 import { defineComponent, PropType } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
@@ -45,6 +50,11 @@ export default defineComponent({
     },
     isEditMode: {
       type: Boolean,
+      required: true
+    },
+    toggleEnlargedImage: {
+      // eslint-disable-next-line no-unused-vars
+      type: Function as PropType<(image: Image) => void>,
       required: true
     }
   }
