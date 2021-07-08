@@ -34,7 +34,7 @@ import SwiperCore, { EffectCoverflow, Autoplay } from "swiper/core";
 SwiperCore.use([EffectCoverflow, Autoplay]);
 
 export default defineComponent({
-  name: "PhotoSlide",
+  name: "PhotoSlider",
   components: { Swiper, SwiperSlide },
   props: {
     images: {

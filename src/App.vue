@@ -1,19 +1,19 @@
 <template>
   <v-app>
     <v-main>
-      <PhotoViewer />
+      <MainViewer />
     </v-main>
   </v-app>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import PhotoViewer from "./components/PhotoViewer.vue";
+import MainViewer from "./components/MainViewer.vue";
 
 export default defineComponent({
   name: "App",
 
-  components: { PhotoViewer }
+  components: { MainViewer }
 });
 </script>
 
