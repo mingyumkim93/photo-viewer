@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-img :src="image.imageURL" />
-    <v-btn v-if="isEditMode && isActive" icon text @click="handleClick"><v-icon>mdi-close</v-icon></v-btn>
+    <v-btn v-if="isEditMode && isActive" icon text @click="handleClick"><v-icon>mdi-delete</v-icon></v-btn>
   </div>
 </template>
 
