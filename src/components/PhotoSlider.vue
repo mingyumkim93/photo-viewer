@@ -10,13 +10,9 @@
       modifier: 1,
       slideShadows: true
     }"
-    :autoplay="{
-      delay: 2500,
-      disableOnInteraction: false
-    }"
   >
     <SwiperSlide v-for="image in images" :key="image.id" v-slot="{ isActive }">
-      <Photo :image="image" :isActive="isActive" :removeImage="removeImage" />
+      <Photo :image="image" :isActive="isActive" :removeImage="removeImage" :isEditMode="isEditMode" />
     </SwiperSlide>
   </Swiper>
 </template>
@@ -28,11 +24,11 @@ import "swiper/components/pagination/pagination.min.css";
 
 import { defineComponent, PropType } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
-import SwiperCore, { EffectCoverflow, Autoplay } from "swiper/core";
+import SwiperCore, { EffectCoverflow } from "swiper/core";
 import Photo from "./Photo.vue";
 import { Image } from "../types/Image";
 
-SwiperCore.use([EffectCoverflow, Autoplay]);
+SwiperCore.use([EffectCoverflow]);
 
 export default defineComponent({
   name: "PhotoSlider",
@@ -46,6 +42,10 @@ export default defineComponent({
       // eslint-disable-next-line no-unused-vars
       type: Function as PropType<(id: number) => void>,
       required: true
+    },
+    isEditMode: {
+      type: Boolean,
+      required: true
     }
   }
 });
@@ -58,8 +58,8 @@ export default defineComponent({
 }
 
 .swiper-slide {
-  width: 300px;
-  height: 300px;
+  width: 500px;
+  height: 500px;
   background: #000;
 }
 

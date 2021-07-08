@@ -1,7 +1,10 @@
 <template>
   <v-container @drop="handleImageDragAndDrop">
-    <PhotoSlider :images="images" :removeImage="removeImage" />
-    <Controls :handleImageInput="handleImageInput" />
+    <v-btn class="exit-button" v-if="!isEditMode" icon text @click="toggleEditmode">
+      <v-icon color="white">mdi-close</v-icon>
+    </v-btn>
+    <PhotoSlider :images="images" :removeImage="removeImage" :isEditMode="isEditMode" />
+    <Controls :handleImageInput="handleImageInput" :isEditMode="isEditMode" :toggleEditmode="toggleEditmode" />
   </v-container>
 </template>
 
@@ -16,8 +19,12 @@ export default defineComponent({
   components: { PhotoSlider, Controls },
   setup() {
     const { images, handleImageInput, handleImageDragAndDrop, removeImage } = useImages();
+    const isEditMode = ref(true);
+    function toggleEditmode() {
+      isEditMode.value = !isEditMode.value;
+    }
 
-    return { images, handleImageInput, handleImageDragAndDrop, removeImage };
+    return { images, handleImageInput, handleImageDragAndDrop, removeImage, isEditMode, toggleEditmode };
   }
 });
 
@@ -90,5 +97,12 @@ function useSampleImages() {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.exit-button {
+  position: absolute;
+  background-color: black;
+  top: 0;
+  right: 0;
 }
 </style>

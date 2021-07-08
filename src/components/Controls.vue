@@ -1,6 +1,6 @@
 <template>
-  <div class="button-group">
-    <v-btn icon text color="black">
+  <div v-if="isEditMode" class="button-group">
+    <v-btn icon text color="black" @click="toggleEditmode">
       <v-icon color="white">mdi-view-carousel</v-icon>
     </v-btn>
     <v-btn icon text color="black" @click="openFileInput">
@@ -18,6 +18,14 @@ export default defineComponent({
     handleImageInput: {
       // eslint-disable-next-line no-unused-vars
       type: Function as PropType<(e: Event) => void>,
+      required: true
+    },
+    isEditMode: {
+      type: Boolean,
+      required: true
+    },
+    toggleEditmode: {
+      type: Function as PropType<() => void>,
       required: true
     }
   },

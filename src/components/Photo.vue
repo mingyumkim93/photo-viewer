@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-img :src="image.imageURL" />
-    <v-btn v-if="isActive" icon text @click="handleClick"><v-icon>mdi-close</v-icon></v-btn>
+    <v-btn v-if="isEditMode && isActive" icon text @click="handleClick"><v-icon>mdi-close</v-icon></v-btn>
   </div>
 </template>
 
@@ -23,6 +23,10 @@ export default defineComponent({
     removeImage: {
       // eslint-disable-next-line no-unused-vars
       type: Function as PropType<(id: number) => void>,
+      required: true
+    },
+    isEditMode: {
+      type: Boolean,
       required: true
     }
   },
