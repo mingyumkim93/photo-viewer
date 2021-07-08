@@ -28,11 +28,16 @@ function useImages() {
   function addImage(e: Event) {
     const input = e.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
-      const file = input.files[0];
-      const imageURL = URL.createObjectURL(file);
-      const ids = images.value.map((image) => image.id);
-      const newImage: Image = { id: Math.max(...ids) + 1, imageURL };
-      images.value = [...images.value, newImage];
+      const files = [...input.files];
+      const newImages = files.map((file, index) => {
+        const currentImageIds = images.value.map((image) => image.id);
+        const currentMaxId = Math.max(...currentImageIds);
+        return {
+          id: currentMaxId + 1 + index,
+          imageURL: URL.createObjectURL(file)
+        };
+      });
+      images.value = [...images.value, ...newImages];
     }
   }
 

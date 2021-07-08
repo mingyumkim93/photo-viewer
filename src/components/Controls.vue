@@ -6,7 +6,7 @@
     <v-btn icon text color="black" @click="openFileInput">
       <v-icon color="white">mdi-image-plus</v-icon>
     </v-btn>
-    <input type="file" accept="image/*" hidden id="image-input" @change="addImage" />
+    <input type="file" accept="image/*" hidden id="image-input" @change="addImage" multiple />
   </div>
 </template>
 
