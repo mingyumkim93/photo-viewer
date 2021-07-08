@@ -37,6 +37,7 @@ function useImages() {
           imageURL: URL.createObjectURL(file)
         };
       });
+      input.value = "";
       images.value = [...images.value, ...newImages];
     }
   }
