@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app @dragover.prevent @drop.prevent>
     <v-main>
       <MainViewer />
     </v-main>

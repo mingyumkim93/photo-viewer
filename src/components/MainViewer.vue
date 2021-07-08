@@ -1,7 +1,7 @@
 <template>
-  <v-container>
+  <v-container @drop="handleImageDragAndDrop">
     <PhotoSlider :images="images" :removeImage="removeImage" />
-    <Controls :addImage="addImage" />
+    <Controls :handleImageInput="handleImageInput" />
   </v-container>
 </template>
 
@@ -15,9 +15,9 @@ export default defineComponent({
   name: "MainViewer",
   components: { PhotoSlider, Controls },
   setup() {
-    const { images, addImage, removeImage } = useImages();
+    const { images, handleImageInput, handleImageDragAndDrop, removeImage } = useImages();
 
-    return { images, addImage, removeImage };
+    return { images, handleImageInput, handleImageDragAndDrop, removeImage };
   }
 });
 
@@ -25,28 +25,39 @@ function useImages() {
   const { SAMPLE_IMAGES } = useSampleImages();
   const images = ref<Image[]>(SAMPLE_IMAGES);
 
-  function addImage(e: Event) {
+  function handleImageInput(e: Event) {
     const input = e.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const files = [...input.files];
-      const newImages = files.map((file, index) => {
-        const currentImageIds = images.value.map((image) => image.id);
-        const currentMaxId = Math.max(...currentImageIds);
-        return {
-          id: currentMaxId + 1 + index,
-          imageURL: URL.createObjectURL(file)
-        };
-      });
+      addImages(files);
       input.value = "";
-      images.value = [...images.value, ...newImages];
     }
+  }
+
+  function handleImageDragAndDrop(e: DragEvent) {
+    if (e.dataTransfer && e.dataTransfer.files.length > 0) {
+      const files = [...e.dataTransfer.files];
+      addImages(files);
+    }
+  }
+
+  function addImages(files: File[]) {
+    const newImages = files.map((file, index) => {
+      const currentImageIds = images.value.map((image) => image.id);
+      const currentMaxId = Math.max(...currentImageIds);
+      return {
+        id: currentMaxId + 1 + index,
+        imageURL: URL.createObjectURL(file)
+      };
+    });
+    images.value = [...images.value, ...newImages];
   }
 
   function removeImage(id: number) {
     images.value = images.value.filter((image) => image.id !== id);
   }
 
-  return { images, addImage, removeImage };
+  return { images, handleImageInput, handleImageDragAndDrop, removeImage };
 }
 
 function useSampleImages() {

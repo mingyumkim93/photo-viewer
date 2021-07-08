@@ -6,7 +6,7 @@
     <v-btn icon text color="black" @click="openFileInput">
       <v-icon color="white">mdi-image-plus</v-icon>
     </v-btn>
-    <input type="file" accept="image/*" hidden id="image-input" @change="addImage" multiple />
+    <input type="file" accept="image/*" hidden id="image-input" @change="handleImageInput" multiple />
   </div>
 </template>
 
@@ -15,8 +15,9 @@ import { defineComponent, PropType } from "vue";
 export default defineComponent({
   name: "Controls",
   props: {
-    addImage: {
-      type: Function as PropType<() => void>,
+    handleImageInput: {
+      // eslint-disable-next-line no-unused-vars
+      type: Function as PropType<(e: Event) => void>,
       required: true
     }
   },
