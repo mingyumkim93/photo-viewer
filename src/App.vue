@@ -1,24 +1,27 @@
 <template>
-  <v-app @dragover.prevent @drop.prevent>
+  <v-app @dragover.prevent @drop.prevent :theme="theme" backgroundColor="background">
     <v-main>
-      <MainViewer />
+      <MainViewer :toggleTheme="toggleTheme" :theme="theme" />
     </v-main>
   </v-app>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import MainViewer from "./components/MainViewer.vue";
 
 export default defineComponent({
   name: "App",
+  components: { MainViewer },
+  setup() {
+    const theme = ref("dark");
+    function toggleTheme() {
+      theme.value = theme.value === "dark" ? "light" : "dark";
+    }
 
-  components: { MainViewer }
+    return { theme, toggleTheme };
+  }
 });
 </script>
 
-<style scoped>
-.v-application {
-  background-color: black;
-}
-</style>
+<style scoped></style>

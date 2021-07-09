@@ -1,21 +1,28 @@
 <template>
   <v-container @drop="handleImageDragAndDrop">
-    <v-btn class="exit-button" v-if="!isEditMode" icon text @click="toggleEditmode">
-      <v-icon color="white">mdi-close</v-icon>
+    <v-btn class="exit-button" v-if="!isEditMode" icon text @click="toggleEditmode" color="background">
+      <v-icon>mdi-close</v-icon>
     </v-btn>
     <PhotoSlider
       :images="images"
       :removeImage="removeImage"
       :isEditMode="isEditMode"
       :toggleEnlargedImage="toggleEnlargedImage"
+      :theme="theme"
     />
-    <Controls :handleImageInput="handleImageInput" :isEditMode="isEditMode" :toggleEditmode="toggleEditmode" />
+    <Controls
+      :handleImageInput="handleImageInput"
+      :isEditMode="isEditMode"
+      :toggleEditmode="toggleEditmode"
+      :toggleTheme="toggleTheme"
+      :theme="theme"
+    />
     <ImageZoom v-if="enlargedImage" :image="enlargedImage" :toggleEnlargedImage="toggleEnlargedImage" />
   </v-container>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, PropType } from "vue";
 import PhotoSlider from "./PhotoSlider.vue";
 import Controls from "./Controls.vue";
 import ImageZoom from "./ImageZoom.vue";
@@ -24,6 +31,16 @@ import { Image } from "../types/Image";
 export default defineComponent({
   name: "MainViewer",
   components: { PhotoSlider, Controls, ImageZoom },
+  props: {
+    toggleTheme: {
+      type: Function as PropType<() => void>,
+      required: true
+    },
+    theme: {
+      type: String,
+      required: true
+    }
+  },
   setup() {
     const { images, handleImageInput, handleImageDragAndDrop, removeImage } = useImages();
     const isEditMode = ref(true);
@@ -32,7 +49,6 @@ export default defineComponent({
     }
 
     const enlargedImage = ref<Image | null>(null);
-    //TODO: Think about name
     function toggleEnlargedImage(image: Image) {
       enlargedImage.value = enlargedImage.value ? null : image;
     }
@@ -123,7 +139,6 @@ function useSampleImages() {
 
 .exit-button {
   position: absolute;
-  background-color: black;
   top: 0;
   right: 0;
 }

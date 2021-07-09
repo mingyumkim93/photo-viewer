@@ -33,6 +33,10 @@ export default defineComponent({
       // eslint-disable-next-line no-unused-vars
       type: Function as PropType<(image: Image) => void>,
       required: true
+    },
+    theme: {
+      type: String,
+      required: true
     }
   },
   setup(props) {

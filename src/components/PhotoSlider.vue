@@ -11,7 +11,12 @@
       slideShadows: true
     }"
   >
-    <SwiperSlide v-for="image in images" :key="image.id" v-slot="{ isActive }">
+    <SwiperSlide
+      :class="{ light: theme === 'light', dark: theme === 'dark' }"
+      v-for="image in images"
+      :key="image.id"
+      v-slot="{ isActive }"
+    >
       <Photo
         :image="image"
         :isActive="isActive"
@@ -56,6 +61,10 @@ export default defineComponent({
       // eslint-disable-next-line no-unused-vars
       type: Function as PropType<(image: Image) => void>,
       required: true
+    },
+    theme: {
+      type: String,
+      required: true
     }
   }
 });
@@ -73,7 +82,7 @@ export default defineComponent({
   background: #000;
 }
 
-.image {
-  -webkit-box-reflect: below 1px linear-gradient(transparent, transparent, #0006);
+.swiper-slide.light {
+  background: #fff;
 }
 </style>

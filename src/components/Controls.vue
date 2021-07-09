@@ -1,10 +1,16 @@
 <template>
   <div v-if="isEditMode" class="button-group">
-    <v-btn icon text color="black" @click="toggleEditmode">
-      <v-icon color="white">mdi-view-carousel</v-icon>
+    <v-btn class="ma-1" icon text color="background" @click="toggleEditmode">
+      <v-icon>mdi-view-carousel</v-icon>
     </v-btn>
-    <v-btn icon text color="black" @click="openFileInput">
-      <v-icon color="white">mdi-image-plus</v-icon>
+    <v-btn class="ma-1" icon text color="background" @click="openFileInput">
+      <v-icon>mdi-image-plus</v-icon>
+    </v-btn>
+    <v-btn class="ma-1" v-if="theme === 'dark'" icon text color="background" @click="toggleTheme">
+      <v-icon>mdi-lightbulb-on</v-icon>
+    </v-btn>
+    <v-btn class="ma-1" v-if="theme === 'light'" icon text color="background" @click="toggleTheme">
+      <v-icon>mdi-lightbulb-off</v-icon>
     </v-btn>
     <input type="file" accept="image/*" hidden id="image-input" @change="handleImageInput" multiple />
   </div>
@@ -26,6 +32,14 @@ export default defineComponent({
     },
     toggleEditmode: {
       type: Function as PropType<() => void>,
+      required: true
+    },
+    toggleTheme: {
+      type: Function as PropType<() => void>,
+      required: true
+    },
+    theme: {
+      type: String,
       required: true
     }
   },
