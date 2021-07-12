@@ -76,13 +76,12 @@ export default defineComponent({
   padding-top: 50px;
 }
 
-.swiper-slide {
-  width: 500px;
-  height: 500px;
-  background: #000;
+.swiper-container >>> .swiper-wrapper {
+  align-items: center;
 }
 
-.swiper-slide.light {
-  background: #fff;
+.swiper-slide {
+  width: 500px;
+  height: auto;
 }
 </style>

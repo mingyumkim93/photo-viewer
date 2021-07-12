@@ -33,10 +33,6 @@ export default defineComponent({
       // eslint-disable-next-line no-unused-vars
       type: Function as PropType<(image: Image) => void>,
       required: true
-    },
-    theme: {
-      type: String,
-      required: true
     }
   },
   setup(props) {
@@ -53,10 +49,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.v-img {
-  -webkit-box-reflect: below 1px linear-gradient(transparent, transparent, #0006);
-}
-
 .v-btn {
   position: absolute;
   top: 1px;
