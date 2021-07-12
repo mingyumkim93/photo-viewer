@@ -1,17 +1,17 @@
 <template>
-  <v-container @drop="handleImageDragAndDrop">
+  <v-container @drop="handleMediaDragAndDrop">
     <v-btn class="exit-button" v-if="!isEditMode" icon text @click="toggleEditmode" color="background">
       <v-icon>mdi-close</v-icon>
     </v-btn>
-    <PhotoSlider
-      :images="images"
-      :removeImage="removeImage"
+    <MediaSlider
+      :medias="medias"
+      :removeMedia="removeMedia"
       :isEditMode="isEditMode"
       :toggleEnlargedImage="toggleEnlargedImage"
       :theme="theme"
     />
     <Controls
-      :handleImageInput="handleImageInput"
+      :handleMediaInput="handleMediaInput"
       :isEditMode="isEditMode"
       :toggleEditmode="toggleEditmode"
       :toggleTheme="toggleTheme"
@@ -23,14 +23,15 @@
 
 <script lang="ts">
 import { defineComponent, ref, PropType } from "vue";
-import PhotoSlider from "./PhotoSlider.vue";
+import MediaSlider from "./MediaSlider.vue";
 import Controls from "./Controls.vue";
 import ImageZoom from "./ImageZoom.vue";
-import { Image } from "../types/Image";
+import { Media } from "../types/Media";
+import { MediaType } from "../types/MediaType";
 
 export default defineComponent({
   name: "MainViewer",
-  components: { PhotoSlider, Controls, ImageZoom },
+  components: { MediaSlider, Controls, ImageZoom },
   props: {
     toggleTheme: {
       type: Function as PropType<() => void>,
@@ -42,22 +43,22 @@ export default defineComponent({
     }
   },
   setup() {
-    const { images, handleImageInput, handleImageDragAndDrop, removeImage } = useImages();
+    const { medias, handleMediaInput, handleMediaDragAndDrop, removeMedia } = useMedias();
     const isEditMode = ref(true);
     function toggleEditmode() {
       isEditMode.value = !isEditMode.value;
     }
 
-    const enlargedImage = ref<Image | null>(null);
-    function toggleEnlargedImage(image: Image) {
+    const enlargedImage = ref<Media | null>(null);
+    function toggleEnlargedImage(image: Media) {
       enlargedImage.value = enlargedImage.value ? null : image;
     }
 
     return {
-      images,
-      handleImageInput,
-      handleImageDragAndDrop,
-      removeImage,
+      medias,
+      handleMediaInput,
+      handleMediaDragAndDrop,
+      removeMedia,
       isEditMode,
       toggleEditmode,
       enlargedImage,
@@ -66,61 +67,63 @@ export default defineComponent({
   }
 });
 
-function useImages() {
+function useMedias() {
   const { SAMPLE_IMAGES } = useSampleImages();
-  const images = ref<Image[]>(SAMPLE_IMAGES);
+  const medias = ref<Media[]>(SAMPLE_IMAGES);
 
-  function handleImageInput(e: Event) {
+  function handleMediaInput(e: Event) {
     const input = e.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const files = [...input.files];
-      addImages(files);
+      addMedias(files);
       input.value = "";
     }
   }
 
-  function handleImageDragAndDrop(e: DragEvent) {
+  function handleMediaDragAndDrop(e: DragEvent) {
     if (e.dataTransfer && e.dataTransfer.files.length > 0) {
       const files = [...e.dataTransfer.files];
-      addImages(files);
+      addMedias(files);
     }
   }
 
-  function addImages(files: File[]) {
-    const newImages = files.map((file, index) => {
-      const currentImageIds = images.value.map((image) => image.id);
+  function addMedias(files: File[]) {
+    const newMedias = files.map((file, index) => {
+      const currentImageIds = medias.value.map((media) => media.id);
       const currentMaxId = Math.max(...currentImageIds);
+      const type = file.type.split("/")[0] === "image" ? MediaType.Image : MediaType.Video;
       return {
         id: currentMaxId + 1 + index,
-        imageURL: URL.createObjectURL(file)
+        url: URL.createObjectURL(file),
+        type
       };
     });
-    images.value = [...images.value, ...newImages];
+    medias.value = [...medias.value, ...newMedias];
   }
 
-  function removeImage(id: number) {
-    images.value = images.value.filter((image) => image.id !== id);
+  function removeMedia(id: number) {
+    medias.value = medias.value.filter((media) => media.id !== id);
   }
 
-  return { images, handleImageInput, handleImageDragAndDrop, removeImage };
+  return { medias, handleMediaInput, handleMediaDragAndDrop, removeMedia };
 }
 
 function useSampleImages() {
-  const SAMPLE_IMAGES: Image[] = [
+  const SAMPLE_IMAGES: Media[] = [
     {
       id: 1,
-      imageURL:
-        "https://images.unsplash.com/photo-1481349518771-20055b2a7b24?ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cmFuZG9tfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80"
+      url: "https://images.unsplash.com/photo-1481349518771-20055b2a7b24?ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cmFuZG9tfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80",
+      type: MediaType.Image
     },
     {
       id: 2,
-      imageURL:
-        "https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/minimalist-orange-armando-borges.jpg"
+      url: "https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/minimalist-orange-armando-borges.jpg",
+      type: MediaType.Image
     },
     {
       id: 3,
-      imageURL:
-        "https://images.unsplash.com/photo-1494253109108-2e30c049369b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTB8fHJhbmRvbXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80"
+      url: "https://images.unsplash.com/photo-1494253109108-2e30c049369b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTB8fHJhbmRvbXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80",
+      type: MediaType.Image
     }
   ];
 

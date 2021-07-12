@@ -1,24 +1,24 @@
 <template>
   <v-card width="70%" @dblclick="close" class="image-zoom-container">
-    <v-img :src="image.imageURL" />
+    <v-img :src="image.url" />
     <v-btn icon text @click="close"><v-icon>mdi-close</v-icon></v-btn>
   </v-card>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import { Image } from "../types/Image";
+import { Media } from "../types/Media";
 
 export default defineComponent({
   name: "ImageZoom",
   props: {
     image: {
-      type: Object as PropType<Image>,
+      type: Object as PropType<Media>,
       required: true
     },
     toggleEnlargedImage: {
       // eslint-disable-next-line no-unused-vars
-      type: Function as PropType<(image: Image) => void>,
+      type: Function as PropType<(image: Media) => void>,
       required: true
     }
   },

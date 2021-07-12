@@ -13,16 +13,24 @@
   >
     <SwiperSlide
       :class="{ light: theme === 'light', dark: theme === 'dark' }"
-      v-for="image in images"
-      :key="image.id"
+      v-for="media in medias"
+      :key="media.id"
       v-slot="{ isActive }"
     >
       <Photo
-        :image="image"
+        v-if="media.type === MediaType.Image"
+        :media="media"
         :isActive="isActive"
-        :removeImage="removeImage"
+        :removeMedia="removeMedia"
         :isEditMode="isEditMode"
         :toggleEnlargedImage="toggleEnlargedImage"
+      />
+      <Video
+        v-if="media.type === MediaType.Video"
+        :media="media"
+        :isActive="isActive"
+        :removeMedia="removeMedia"
+        :isEditMode="isEditMode"
       />
     </SwiperSlide>
   </Swiper>
@@ -36,19 +44,21 @@ import { defineComponent, PropType } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import SwiperCore, { EffectCoverflow } from "swiper/core";
 import Photo from "./Photo.vue";
-import { Image } from "../types/Image";
+import Video from "./Video.vue";
+import { Media } from "../types/Media";
+import { MediaType } from "../types/MediaType";
 
 SwiperCore.use([EffectCoverflow]);
 
 export default defineComponent({
-  name: "PhotoSlider",
-  components: { Swiper, SwiperSlide, Photo },
+  name: "MediaSlider",
+  components: { Swiper, SwiperSlide, Photo, Video },
   props: {
-    images: {
-      type: Object as PropType<Image[]>,
+    medias: {
+      type: Object as PropType<Media[]>,
       required: true
     },
-    removeImage: {
+    removeMedia: {
       // eslint-disable-next-line no-unused-vars
       type: Function as PropType<(id: number) => void>,
       required: true
@@ -59,13 +69,16 @@ export default defineComponent({
     },
     toggleEnlargedImage: {
       // eslint-disable-next-line no-unused-vars
-      type: Function as PropType<(image: Image) => void>,
+      type: Function as PropType<(image: Media) => void>,
       required: true
     },
     theme: {
       type: String,
       required: true
     }
+  },
+  setup() {
+    return { MediaType };
   }
 });
 </script>
@@ -81,7 +94,7 @@ export default defineComponent({
 }
 
 .swiper-slide {
-  width: 500px;
+  max-width: 500px;
   height: auto;
 }
 </style>

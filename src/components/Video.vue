@@ -1,12 +1,14 @@
 <template>
-  <div @dblclick="enlarge">
-    <v-img :src="media.url" />
+  <div>
+    <video width="500" controls :id="`video${media.id}`">
+      <source :src="media.url" />
+    </video>
     <v-btn v-if="isEditMode && isActive" icon text @click="remove"><v-icon>mdi-delete</v-icon></v-btn>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { defineComponent, PropType, watch } from "vue";
 import { Media } from "../types/Media";
 
 export default defineComponent({
@@ -28,11 +30,6 @@ export default defineComponent({
     isEditMode: {
       type: Boolean,
       required: true
-    },
-    toggleEnlargedImage: {
-      // eslint-disable-next-line no-unused-vars
-      type: Function as PropType<(image: Media) => void>,
-      required: true
     }
   },
   setup(props) {
@@ -40,10 +37,15 @@ export default defineComponent({
       props.removeMedia(props.media.id);
     }
 
-    function enlarge() {
-      props.toggleEnlargedImage(props.media);
-    }
-    return { remove, enlarge };
+    watch(
+      () => props.isActive,
+      () => {
+        const video = document.getElementById(`video${props.media.id}`) as HTMLVideoElement;
+        if (!props.isActive) video.pause();
+      }
+    );
+
+    return { remove };
   }
 });
 </script>
@@ -54,5 +56,6 @@ export default defineComponent({
   top: 1px;
   right: 1px;
   background-color: transparent;
+  z-index: 1;
 }
 </style>

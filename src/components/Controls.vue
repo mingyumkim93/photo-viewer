@@ -4,7 +4,7 @@
       <v-icon>mdi-view-carousel</v-icon>
     </v-btn>
     <v-btn class="ma-1" icon text color="background" @click="openFileInput">
-      <v-icon>mdi-image-plus</v-icon>
+      <v-icon>mdi-plus-box</v-icon>
     </v-btn>
     <v-btn class="ma-1" v-if="theme === 'dark'" icon text color="background" @click="toggleTheme">
       <v-icon>mdi-lightbulb-on</v-icon>
@@ -12,7 +12,7 @@
     <v-btn class="ma-1" v-if="theme === 'light'" icon text color="background" @click="toggleTheme">
       <v-icon>mdi-lightbulb-off</v-icon>
     </v-btn>
-    <input type="file" accept="image/*" hidden id="image-input" @change="handleImageInput" multiple />
+    <input type="file" accept="image/*, video/*" hidden id="media-input" @change="handleMediaInput" multiple />
   </div>
 </template>
 
@@ -21,7 +21,7 @@ import { defineComponent, PropType } from "vue";
 export default defineComponent({
   name: "Controls",
   props: {
-    handleImageInput: {
+    handleMediaInput: {
       // eslint-disable-next-line no-unused-vars
       type: Function as PropType<(e: Event) => void>,
       required: true
@@ -45,7 +45,7 @@ export default defineComponent({
   },
   setup() {
     function openFileInput() {
-      const input = document.getElementById("image-input");
+      const input = document.getElementById("media-input");
       if (input) input.click();
     }
 
