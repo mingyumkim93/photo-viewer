@@ -20,7 +20,13 @@
       :isShareDialogOpen="isShareDialogOpen"
     />
     <ImageZoom v-if="enlargedImage" :image="enlargedImage" :toggleEnlargedImage="toggleEnlargedImage" />
-    <ShareDialog :isShareDialogOpen="isShareDialogOpen" :albumURL="albumURL" :closeShareDialog="closeShareDialog" />
+    <ShareDialog
+      :isShareDialogOpen="isShareDialogOpen"
+      :albumURL="albumURL"
+      :closeShareDialog="closeShareDialog"
+      :shareAlbum="shareAlbum"
+      :medias="medias"
+    />
   </v-container>
 </template>
 
@@ -32,7 +38,9 @@ import ImageZoom from "./ImageZoom.vue";
 import ShareDialog from "./ShareDialog.vue";
 import { Media } from "../types/Media";
 import { MediaType } from "../types/MediaType";
+import { Album } from "../types/Album";
 import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
 
 export default defineComponent({
   name: "MainViewer",
@@ -49,7 +57,7 @@ export default defineComponent({
   },
   setup() {
     const { medias, handleMediaInput, handleMediaDragAndDrop, removeMedia } = useMedias();
-    const { isShareDialogOpen, albumURL, openShareDialog, closeShareDialog } = useShareDialog();
+    const { isShareDialogOpen, albumURL, openShareDialog, closeShareDialog, shareAlbum } = useShare();
     const isEditMode = ref(true);
     function toggleEditmode() {
       isEditMode.value = !isEditMode.value;
@@ -72,7 +80,8 @@ export default defineComponent({
       isShareDialogOpen,
       albumURL,
       openShareDialog,
-      closeShareDialog
+      closeShareDialog,
+      shareAlbum
     };
   }
 });
@@ -140,23 +149,34 @@ function useSampleImages() {
   return { SAMPLE_IMAGES };
 }
 
-function useShareDialog() {
+function useShare() {
   const isShareDialogOpen = ref(false);
-  const shareId = ref<string | null>(null);
-  const albumURL = ref<string | null>(null);
+  const id = ref<string>("");
+  const albumURL = ref<string>("");
 
   function openShareDialog() {
-    shareId.value = uuidv4();
-    albumURL.value = window.location.href + shareId.value;
+    id.value = uuidv4();
+    albumURL.value = window.location.href + id.value;
     isShareDialogOpen.value = true;
   }
 
   function closeShareDialog() {
-    shareId.value = null;
-    albumURL.value = null;
+    id.value = "";
+    albumURL.value = "";
     isShareDialogOpen.value = false;
   }
-  return { isShareDialogOpen, albumURL, openShareDialog, closeShareDialog };
+
+  async function shareAlbum(medias: Media[]) {
+    //upload medias to db
+    //show toast message
+    const album: Album = {
+      id: id.value,
+      medias,
+      createdAt: new Date()
+    };
+    return axios.post("api/medias", { album }).then((res) => console.log(res));
+  }
+  return { isShareDialogOpen, albumURL, openShareDialog, closeShareDialog, shareAlbum };
 }
 </script>
 

@@ -6,13 +6,15 @@
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-btn text @click="closeShareDialog"> Cancel </v-btn>
-      <v-btn text @click="closeShareDialog"> Share </v-btn>
+      <v-btn text @click="handleShare" :disabled="isUploading"> Share </v-btn>
     </v-card-actions>
   </v-card>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { defineComponent, PropType, ref } from "vue";
+import { Media } from "../types/Media";
+
 export default defineComponent({
   name: "MainViewer",
   props: {
@@ -27,7 +29,26 @@ export default defineComponent({
     albumURL: {
       type: String,
       required: true
+    },
+    shareAlbum: {
+      // eslint-disable-next-line no-unused-vars
+      type: Function as PropType<(medias: Media[]) => Promise<void>>,
+      required: true
+    },
+    medias: {
+      type: Array as PropType<Media[]>,
+      required: true
     }
+  },
+  setup(props) {
+    const isUploading = ref(false);
+    async function handleShare() {
+      isUploading.value = true;
+      await props.shareAlbum(props.medias);
+      props.closeShareDialog();
+      isUploading.value = false;
+    }
+    return { handleShare, isUploading };
   }
 });
 </script>
