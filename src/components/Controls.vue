@@ -12,12 +12,16 @@
     <v-btn class="ma-1" v-if="theme === 'light'" icon text color="background" @click="toggleTheme">
       <v-icon>mdi-lightbulb-off</v-icon>
     </v-btn>
+    <v-btn class="ma-1" icon text color="background" @click="openShareDialog" :disabled="isShareDialogOpen">
+      <v-icon>mdi-share</v-icon>
+    </v-btn>
     <input type="file" accept="image/*, video/*" hidden id="media-input" @change="handleMediaInput" multiple />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
+
 export default defineComponent({
   name: "Controls",
   props: {
@@ -40,6 +44,14 @@ export default defineComponent({
     },
     theme: {
       type: String,
+      required: true
+    },
+    openShareDialog: {
+      type: Function as PropType<() => void>,
+      required: true
+    },
+    isShareDialogOpen: {
+      type: Boolean,
       required: true
     }
   },

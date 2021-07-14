@@ -16,8 +16,11 @@
       :toggleEditmode="toggleEditmode"
       :toggleTheme="toggleTheme"
       :theme="theme"
+      :openShareDialog="openShareDialog"
+      :isShareDialogOpen="isShareDialogOpen"
     />
     <ImageZoom v-if="enlargedImage" :image="enlargedImage" :toggleEnlargedImage="toggleEnlargedImage" />
+    <ShareDialog :isShareDialogOpen="isShareDialogOpen" :albumURL="albumURL" :closeShareDialog="closeShareDialog" />
   </v-container>
 </template>
 
@@ -26,12 +29,14 @@ import { defineComponent, ref, PropType } from "vue";
 import MediaSlider from "./MediaSlider.vue";
 import Controls from "./Controls.vue";
 import ImageZoom from "./ImageZoom.vue";
+import ShareDialog from "./ShareDialog.vue";
 import { Media } from "../types/Media";
 import { MediaType } from "../types/MediaType";
+import { v4 as uuidv4 } from "uuid";
 
 export default defineComponent({
   name: "MainViewer",
-  components: { MediaSlider, Controls, ImageZoom },
+  components: { MediaSlider, Controls, ImageZoom, ShareDialog },
   props: {
     toggleTheme: {
       type: Function as PropType<() => void>,
@@ -44,6 +49,7 @@ export default defineComponent({
   },
   setup() {
     const { medias, handleMediaInput, handleMediaDragAndDrop, removeMedia } = useMedias();
+    const { isShareDialogOpen, albumURL, openShareDialog, closeShareDialog } = useShareDialog();
     const isEditMode = ref(true);
     function toggleEditmode() {
       isEditMode.value = !isEditMode.value;
@@ -62,7 +68,11 @@ export default defineComponent({
       isEditMode,
       toggleEditmode,
       enlargedImage,
-      toggleEnlargedImage
+      toggleEnlargedImage,
+      isShareDialogOpen,
+      albumURL,
+      openShareDialog,
+      closeShareDialog
     };
   }
 });
@@ -90,7 +100,7 @@ function useMedias() {
   function addMedias(files: File[]) {
     const newMedias = files.map((file, index) => {
       const currentImageIds = medias.value.map((media) => media.id);
-      const currentMaxId = Math.max(...currentImageIds);
+      const currentMaxId = currentImageIds.length > 0 ? Math.max(...currentImageIds) : 0;
       const type = file.type.split("/")[0] === "image" ? MediaType.Image : MediaType.Video;
       return {
         id: currentMaxId + 1 + index,
@@ -128,6 +138,25 @@ function useSampleImages() {
   ];
 
   return { SAMPLE_IMAGES };
+}
+
+function useShareDialog() {
+  const isShareDialogOpen = ref(false);
+  const shareId = ref<string | null>(null);
+  const albumURL = ref<string | null>(null);
+
+  function openShareDialog() {
+    shareId.value = uuidv4();
+    albumURL.value = window.location.href + shareId.value;
+    isShareDialogOpen.value = true;
+  }
+
+  function closeShareDialog() {
+    shareId.value = null;
+    albumURL.value = null;
+    isShareDialogOpen.value = false;
+  }
+  return { isShareDialogOpen, albumURL, openShareDialog, closeShareDialog };
 }
 </script>
 
