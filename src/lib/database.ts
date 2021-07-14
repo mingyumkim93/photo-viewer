@@ -8,6 +8,7 @@ export const connectToDatabase = async () => {
     console.log("Use existing connection");
     return Promise.resolve(cachedDb);
   } else {
+    console.log(process.env.MONGODB_URI, "!!!!!!!!!!");
     const client = await mongoClient.connect(process.env.MONGODB_URI as string, {
       native_parser: true,
       useUnifiedTopology: true
