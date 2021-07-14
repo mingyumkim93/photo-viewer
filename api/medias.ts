@@ -2,6 +2,7 @@ import { VercelRequest, VercelResponse } from "@vercel/node";
 import { connectToDatabase } from "../src/lib/database";
 
 export default async function medias(req: VercelRequest, res: VercelResponse) {
+  console.log("????");
   const db = await connectToDatabase();
   console.log("db:", db);
   const collection = db.collection("medias");
