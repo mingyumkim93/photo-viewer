@@ -27,6 +27,7 @@
       :shareAlbum="shareAlbum"
       :medias="medias"
     />
+    <ToastGroup :toasts="toasts" :removeToastMessage="removeToastMessage" />
   </v-container>
 </template>
 
@@ -36,16 +37,18 @@ import MediaSlider from "./MediaSlider.vue";
 import Controls from "./Controls.vue";
 import ImageZoom from "./ImageZoom.vue";
 import ShareDialog from "./ShareDialog.vue";
+import ToastGroup from "./ToastGroup.vue";
 import { Media } from "../types/Media";
 import { MediaType } from "../types/MediaType";
 import { Album } from "../types/Album";
+import { Toast } from "../types/Toast";
 import { ToastType } from "../types/ToastType";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 
 export default defineComponent({
   name: "MainViewer",
-  components: { MediaSlider, Controls, ImageZoom, ShareDialog },
+  components: { MediaSlider, Controls, ImageZoom, ShareDialog, ToastGroup },
   props: {
     toggleTheme: {
       type: Function as PropType<() => void>,
@@ -54,18 +57,12 @@ export default defineComponent({
     theme: {
       type: String,
       required: true
-    },
-    addToastMessage: {
-      // eslint-disable-next-line no-unused-vars
-      type: Function as PropType<(type: ToastType, text: string) => void>,
-      required: true
     }
   },
-  setup(props) {
+  setup() {
     const { medias, handleMediaInput, handleMediaDragAndDrop, removeMedia } = useMedias();
-    const { isShareDialogOpen, albumURL, openShareDialog, closeShareDialog, shareAlbum } = useShare(
-      props.addToastMessage
-    );
+    const { toasts, addToastMessage, removeToastMessage } = useToast();
+    const { isShareDialogOpen, albumURL, openShareDialog, closeShareDialog, shareAlbum } = useShare(addToastMessage);
 
     const isEditMode = ref(true);
     function toggleEditmode() {
@@ -90,7 +87,10 @@ export default defineComponent({
       albumURL,
       openShareDialog,
       closeShareDialog,
-      shareAlbum
+      shareAlbum,
+      toasts,
+      addToastMessage,
+      removeToastMessage
     };
   }
 });
@@ -193,6 +193,29 @@ function useShare(addToastMessage: (type: ToastType, text: string, albumId?: str
       });
   }
   return { isShareDialogOpen, albumURL, openShareDialog, closeShareDialog, shareAlbum };
+}
+
+function useToast() {
+  const toasts = ref<Toast[]>([]);
+
+  function getNextToastId() {
+    const currentToastIds = toasts.value.map((toast) => toast.id);
+    const currentMaxId = currentToastIds.length > 0 ? Math.max(...currentToastIds) : 0;
+    const id = currentMaxId + 1;
+    return id;
+  }
+
+  function addToastMessage(type: ToastType, text: string) {
+    const id = getNextToastId();
+    const toast: Toast = { id, type, text };
+    toasts.value = [...toasts.value, toast];
+  }
+
+  function removeToastMessage(id: number) {
+    toasts.value = toasts.value.filter((toast) => toast.id !== id);
+  }
+
+  return { toasts, addToastMessage, removeToastMessage };
 }
 </script>
 
