@@ -63,16 +63,8 @@ export default defineComponent({
     const { medias, handleMediaInput, handleMediaDragAndDrop, removeMedia } = useMedias();
     const { toasts, addToastMessage, removeToastMessage } = useToast();
     const { isShareDialogOpen, albumURL, openShareDialog, closeShareDialog, shareAlbum } = useShare(addToastMessage);
-
-    const isEditMode = ref(true);
-    function toggleEditmode() {
-      isEditMode.value = !isEditMode.value;
-    }
-
-    const enlargedImage = ref<Media | null>(null);
-    function toggleEnlargedImage(image: Media) {
-      enlargedImage.value = enlargedImage.value ? null : image;
-    }
+    const { isEditMode, toggleEditmode } = useEditMode();
+    const { enlargedImage, toggleEnlargedImage } = useEnlargedImage();
 
     return {
       medias,
@@ -159,7 +151,7 @@ function useSampleImages() {
 }
 
 // eslint-disable-next-line no-unused-vars
-function useShare(addToastMessage: (type: ToastType, text: string, albumId?: string) => void) {
+function useShare(addToastMessage: (type: ToastType, text: string) => void) {
   const isShareDialogOpen = ref(false);
   const id = ref<string>("");
   const albumURL = ref<string>("");
@@ -216,6 +208,24 @@ function useToast() {
   }
 
   return { toasts, addToastMessage, removeToastMessage };
+}
+
+function useEditMode() {
+  const isEditMode = ref(true);
+  function toggleEditmode() {
+    isEditMode.value = !isEditMode.value;
+  }
+
+  return { isEditMode, toggleEditmode };
+}
+
+function useEnlargedImage() {
+  const enlargedImage = ref<Media | null>(null);
+  function toggleEnlargedImage(image: Media) {
+    enlargedImage.value = enlargedImage.value ? null : image;
+  }
+
+  return { enlargedImage, toggleEnlargedImage };
 }
 </script>
 
