@@ -185,13 +185,11 @@ function useShare(addToastMessage: (type: ToastType, text: string, albumId?: str
 
     return axios
       .post("api/medias", { album })
-      .then((res) => {
-        const { type, text } = res.data;
-        addToastMessage(type, text);
+      .then(() => {
+        addToastMessage(ToastType.Success, "Your album is created");
       })
-      .catch((err) => {
-        const { type, text } = err.data;
-        addToastMessage(type, text);
+      .catch(() => {
+        addToastMessage(ToastType.Error, "Something went wrong");
       });
   }
   return { isShareDialogOpen, albumURL, openShareDialog, closeShareDialog, shareAlbum };
