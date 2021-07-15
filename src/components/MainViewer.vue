@@ -39,6 +39,7 @@ import ShareDialog from "./ShareDialog.vue";
 import { Media } from "../types/Media";
 import { MediaType } from "../types/MediaType";
 import { Album } from "../types/Album";
+import { ToastType } from "../types/ToastType";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 
@@ -53,11 +54,19 @@ export default defineComponent({
     theme: {
       type: String,
       required: true
+    },
+    addToastMessage: {
+      // eslint-disable-next-line no-unused-vars
+      type: Function as PropType<(type: ToastType, text: string) => void>,
+      required: true
     }
   },
-  setup() {
+  setup(props) {
     const { medias, handleMediaInput, handleMediaDragAndDrop, removeMedia } = useMedias();
-    const { isShareDialogOpen, albumURL, openShareDialog, closeShareDialog, shareAlbum } = useShare();
+    const { isShareDialogOpen, albumURL, openShareDialog, closeShareDialog, shareAlbum } = useShare(
+      props.addToastMessage
+    );
+
     const isEditMode = ref(true);
     function toggleEditmode() {
       isEditMode.value = !isEditMode.value;
@@ -149,7 +158,8 @@ function useSampleImages() {
   return { SAMPLE_IMAGES };
 }
 
-function useShare() {
+// eslint-disable-next-line no-unused-vars
+function useShare(addToastMessage: (type: ToastType, text: string, albumId?: string) => void) {
   const isShareDialogOpen = ref(false);
   const id = ref<string>("");
   const albumURL = ref<string>("");
@@ -167,14 +177,22 @@ function useShare() {
   }
 
   async function shareAlbum(medias: Media[]) {
-    //upload medias to db
-    //show toast message
     const album: Album = {
       id: id.value,
       medias,
       createdAt: new Date()
     };
-    return axios.post("api/medias", { album }).then((res) => console.log(res));
+
+    return axios
+      .post("api/medias", { album })
+      .then((res) => {
+        const { type, text } = res.data;
+        addToastMessage(type, text);
+      })
+      .catch((err) => {
+        const { type, text } = err.data;
+        addToastMessage(type, text);
+      });
   }
   return { isShareDialogOpen, albumURL, openShareDialog, closeShareDialog, shareAlbum };
 }
