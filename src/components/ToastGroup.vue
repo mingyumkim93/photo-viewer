@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column justify-space-around ma-3">
+  <div class="toast-group d-flex flex-column justify-space-around ma-3">
     <ToastMessage v-for="toast in toasts" :key="toast.id" :toast="toast" :removeToastMessage="removeToastMessage" />
   </div>
 </template>
@@ -26,3 +26,12 @@ export default defineComponent({
   setup() {}
 });
 </script>
+
+<style scoped>
+.toast-group {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  z-index: 1;
+}
+</style>

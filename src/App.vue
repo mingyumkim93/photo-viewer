@@ -2,7 +2,7 @@
   <v-app @dragover.prevent @drop.prevent :theme="theme" backgroundColor="background">
     <v-main>
       <MainViewer :toggleTheme="toggleTheme" :theme="theme" :addToastMessage="addToastMessage" />
-      <ToastGroup class="toast-group" :toasts="toasts" :removeToastMessage="removeToastMessage" />
+      <ToastGroup :toasts="toasts" :removeToastMessage="removeToastMessage" />
     </v-main>
   </v-app>
 </template>
@@ -51,12 +51,3 @@ function useToast() {
   return { toasts, addToastMessage, removeToastMessage };
 }
 </script>
-
-<style scoped>
-.toast-group {
-  position: absolute;
-  bottom: 0px;
-  right: 0px;
-  z-index: 5;
-}
-</style>
