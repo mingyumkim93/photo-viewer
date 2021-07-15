@@ -1,8 +1,14 @@
 <template>
   <!-- TODO: change to v-dialog component once Vuetify 3 supports it -->
-  <v-card v-if="isShareDialogOpen" sm="6" md="4" class="share-dialog-container" elevation="20">
+  <v-card v-if="isShareDialogOpen" color="background" sm="6" md="4" class="share-dialog-container" elevation="20">
     <v-card-title> Creating your album to </v-card-title>
-    <v-card-text> {{ albumURL }}</v-card-text>
+    <v-card-text>
+      <span>
+        {{ albumURL }}
+      </span>
+      <v-btn text icon color="background" @click="copyAlbumURL"> <v-icon>mdi-content-copy</v-icon> </v-btn></v-card-text
+    >
+
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-btn text @click="closeShareDialog"> Cancel </v-btn>
@@ -48,7 +54,17 @@ export default defineComponent({
       props.closeShareDialog();
       isUploading.value = false;
     }
-    return { handleShare, isUploading };
+
+    function copyAlbumURL() {
+      const tempInput = document.createElement("input");
+      tempInput.value = props.albumURL;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand("copy");
+      document.body.removeChild(tempInput);
+    }
+
+    return { handleShare, isUploading, copyAlbumURL };
   }
 });
 </script>
