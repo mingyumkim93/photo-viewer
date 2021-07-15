@@ -1,18 +1,20 @@
 <template>
   <!-- TODO: change to v-dialog component once Vuetify 3 supports it -->
+  <!-- TODO: make sharing album temporary for unauthenticated user -->
   <v-card v-if="isShareDialogOpen" color="background" sm="6" md="4" class="share-dialog-container" elevation="20">
     <v-card-title> Creating your album to </v-card-title>
     <v-card-text>
       <span>
         {{ albumURL }}
       </span>
-      <v-btn text icon color="background" @click="copyAlbumURL"> <v-icon>mdi-content-copy</v-icon> </v-btn></v-card-text
-    >
+      <v-btn text icon color="background" @click="copyAlbumURL"> <v-icon>mdi-content-copy</v-icon> </v-btn>
+    </v-card-text>
 
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn text @click="closeShareDialog"> Cancel </v-btn>
-      <v-btn text @click="handleShare" :disabled="isUploading"> Share </v-btn>
+      <v-btn v-if="!isUploading" text @click="closeShareDialog"> Cancel </v-btn>
+      <v-btn v-if="!isUploading" text @click="handleShare"> Share </v-btn>
+      <v-progress-circular v-if="isUploading" indeterminate color="text"></v-progress-circular>
     </v-card-actions>
   </v-card>
 </template>
