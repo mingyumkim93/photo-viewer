@@ -31,8 +31,11 @@ export default defineComponent({
     onMounted(() => {
       //fetch medias
       const id = window.location.href.split("/").pop();
+      const baseURL =
+        // eslint-disable-next-line no-undef
+        process.env.NODE_ENV === "production" ? "https://photo-viewer-alpha.vercel.app/" : "http://localhost:3000/";
       axios
-        .get(window.location.href + "api/medias", { params: { id } })
+        .get(baseURL + "api/medias", { params: { id } })
         .then((res) => {
           medias.value = res.data.medias;
           isLoading.value = false;
