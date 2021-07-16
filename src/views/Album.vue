@@ -32,7 +32,7 @@ export default defineComponent({
       //fetch medias
       const id = window.location.href.split("/").pop();
       axios
-        .get("http://localhost:3000/api/medias", { params: { id } })
+        .get(window.location.href + "api/medias", { params: { id } })
         .then((res) => {
           medias.value = res.data.medias;
           isLoading.value = false;
