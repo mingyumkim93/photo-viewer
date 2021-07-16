@@ -13,5 +13,17 @@ export default async function medias(req: VercelRequest, res: VercelResponse) {
     } catch (err) {
       res.status(500).json({ status: "fail" });
     }
+  } else if (req.method === "GET") {
+    const id = req.query.id;
+    console.log(id);
+    try {
+      collection.findOne({ $and: [{ id: id }] }, (error, result) => {
+        if (result) res.status(200).json({ medias: result.medias });
+        else res.status(404).json({ status: "not found" });
+      });
+    } catch (err) {
+      res.status(500).json({ status: "fail" });
+    }
+    // res.status(200).json({ medias: ["test"] });
   }
 }

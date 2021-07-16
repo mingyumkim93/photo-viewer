@@ -11,12 +11,7 @@
       slideShadows: true
     }"
   >
-    <SwiperSlide
-      :class="{ light: theme === 'light', dark: theme === 'dark' }"
-      v-for="media in medias"
-      :key="media.id"
-      v-slot="{ isActive }"
-    >
+    <SwiperSlide v-for="media in medias" :key="media.id" v-slot="{ isActive }">
       <Photo
         v-if="media.type === MediaType.Image"
         :media="media"
@@ -61,7 +56,7 @@ export default defineComponent({
     removeMedia: {
       // eslint-disable-next-line no-unused-vars
       type: Function as PropType<(id: number) => void>,
-      required: true
+      required: false
     },
     isEditMode: {
       type: Boolean,
@@ -70,10 +65,6 @@ export default defineComponent({
     toggleEnlargedImage: {
       // eslint-disable-next-line no-unused-vars
       type: Function as PropType<(image: Media) => void>,
-      required: true
-    },
-    theme: {
-      type: String,
       required: true
     }
   },

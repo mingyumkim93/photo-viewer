@@ -158,7 +158,7 @@ function useShare(addToastMessage: (type: ToastType, text: string) => void) {
 
   function openShareDialog() {
     id.value = uuidv4();
-    albumURL.value = window.location.href + "/album/" + id.value;
+    albumURL.value = window.location.href + "album/" + id.value;
     isShareDialogOpen.value = true;
   }
 
