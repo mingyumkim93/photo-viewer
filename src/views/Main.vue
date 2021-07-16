@@ -33,11 +33,11 @@
 
 <script lang="ts">
 import { defineComponent, ref, PropType } from "vue";
-import MediaSlider from "./MediaSlider.vue";
-import Controls from "./Controls.vue";
-import ImageZoom from "./ImageZoom.vue";
-import ShareDialog from "./ShareDialog.vue";
-import ToastGroup from "./ToastGroup.vue";
+import MediaSlider from "../components/MediaSlider.vue";
+import Controls from "../components/Controls.vue";
+import ImageZoom from "../components/ImageZoom.vue";
+import ShareDialog from "../components/ShareDialog.vue";
+import ToastGroup from "../components/ToastGroup.vue";
 import { Media } from "../types/Media";
 import { MediaType } from "../types/MediaType";
 import { Album } from "../types/Album";
@@ -47,7 +47,7 @@ import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 
 export default defineComponent({
-  name: "MainViewer",
+  name: "Main",
   components: { MediaSlider, Controls, ImageZoom, ShareDialog, ToastGroup },
   props: {
     toggleTheme: {
@@ -158,7 +158,7 @@ function useShare(addToastMessage: (type: ToastType, text: string) => void) {
 
   function openShareDialog() {
     id.value = uuidv4();
-    albumURL.value = window.location.href + id.value;
+    albumURL.value = window.location.href + "/album/" + id.value;
     isShareDialogOpen.value = true;
   }
 

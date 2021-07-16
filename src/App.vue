@@ -1,24 +1,20 @@
 <template>
   <v-app @dragover.prevent @drop.prevent :theme="theme" backgroundColor="background">
     <v-main>
-      <MainViewer :toggleTheme="toggleTheme" :theme="theme" />
+      <RouterView />
     </v-main>
   </v-app>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import MainViewer from "./components/MainViewer.vue";
+import { defineComponent } from "vue";
+import { theme, toggleTheme } from "./lib/theme";
+import { RouterView } from "vue-router";
 
 export default defineComponent({
   name: "App",
-  components: { MainViewer },
+  components: { RouterView },
   setup() {
-    const theme = ref("dark");
-    function toggleTheme() {
-      theme.value = theme.value === "dark" ? "light" : "dark";
-    }
-
     return { theme, toggleTheme };
   }
 });
