@@ -45,6 +45,7 @@ import { Toast } from "../types/Toast";
 import { ToastType } from "../types/ToastType";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
+import storage from "../lib/storage";
 
 export default defineComponent({
   name: "Main",
@@ -115,7 +116,8 @@ function useMedias() {
       return {
         id: currentMaxId + 1 + index,
         url: URL.createObjectURL(file),
-        type
+        type,
+        file
       };
     });
     medias.value = [...medias.value, ...newMedias];
@@ -153,25 +155,26 @@ function useSampleImages() {
 // eslint-disable-next-line no-unused-vars
 function useShare(addToastMessage: (type: ToastType, text: string) => void) {
   const isShareDialogOpen = ref(false);
-  const id = ref<string>("");
+  const albumId = ref<string>("");
   const albumURL = ref<string>("");
 
   function openShareDialog() {
-    id.value = uuidv4();
-    albumURL.value = window.location.href + "album/" + id.value;
+    albumId.value = uuidv4();
+    albumURL.value = window.location.href + "album/" + albumId.value;
     isShareDialogOpen.value = true;
   }
 
   function closeShareDialog() {
-    id.value = "";
+    albumId.value = "";
     albumURL.value = "";
     isShareDialogOpen.value = false;
   }
 
   async function shareAlbum(medias: Media[]) {
+    const mediasAfterUpload = await uploadMedias(medias);
     const album: Album = {
-      id: id.value,
-      medias,
+      id: albumId.value,
+      medias: mediasAfterUpload,
       createdAt: new Date()
     };
 
@@ -184,6 +187,26 @@ function useShare(addToastMessage: (type: ToastType, text: string) => void) {
         addToastMessage(ToastType.Error, "Something went wrong");
       });
   }
+
+  async function uploadMedias(medias: Media[]): Promise<Media[]> {
+    const mediasAfterUpload = Promise.all(
+      medias.map(async (media) => {
+        //upload image file to storage
+        if (media.file) {
+          const uploadTask = await storage.ref(`medias/${albumId.value}/${media.id}`).put(media.file);
+          return {
+            id: media.id,
+            url: (await uploadTask.ref.getDownloadURL()) as string,
+            type: media.type
+          };
+        }
+        return media;
+      })
+    );
+
+    return mediasAfterUpload;
+  }
+
   return { isShareDialogOpen, albumURL, openShareDialog, closeShareDialog, shareAlbum };
 }
 

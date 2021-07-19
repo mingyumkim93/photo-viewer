@@ -15,7 +15,6 @@ export default async function medias(req: VercelRequest, res: VercelResponse) {
     }
   } else if (req.method === "GET") {
     const id = req.query.id;
-    console.log(id);
     try {
       collection.findOne({ $and: [{ id: id }] }, (error, result) => {
         if (result) res.status(200).json({ medias: result.medias });
@@ -24,6 +23,5 @@ export default async function medias(req: VercelRequest, res: VercelResponse) {
     } catch (err) {
       res.status(500).json({ status: "fail" });
     }
-    // res.status(200).json({ medias: ["test"] });
   }
 }
