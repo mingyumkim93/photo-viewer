@@ -1,7 +1,9 @@
 <template>
   <div @dblclick="enlarge">
     <v-img :src="media.url" />
-    <v-btn v-if="isEditMode && isActive" icon text @click="remove"><v-icon>mdi-delete</v-icon></v-btn>
+    <v-btn v-if="isEditMode && isActive" icon text @click="remove"
+      ><v-icon :color="textColor">mdi-delete</v-icon></v-btn
+    >
   </div>
 </template>
 
@@ -32,6 +34,10 @@ export default defineComponent({
     toggleEnlargedImage: {
       // eslint-disable-next-line no-unused-vars
       type: Function as PropType<(image: Media) => void>,
+      required: true
+    },
+    textColor: {
+      type: String,
       required: true
     }
   },

@@ -19,6 +19,7 @@
         :removeMedia="removeMedia"
         :isEditMode="isEditMode"
         :toggleEnlargedImage="toggleEnlargedImage"
+        :textColor="textColor"
       />
       <Video
         v-if="media.type === MediaType.Video"
@@ -65,6 +66,10 @@ export default defineComponent({
     toggleEnlargedImage: {
       // eslint-disable-next-line no-unused-vars
       type: Function as PropType<(image: Media) => void>,
+      required: true
+    },
+    textColor: {
+      type: String,
       required: true
     }
   },

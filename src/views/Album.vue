@@ -1,20 +1,21 @@
 <template>
-  <v-container>
-    <v-progress-circular v-if="isLoading" indeterminate color="text"></v-progress-circular>
-    <MediaSlider
-      v-if="medias.length > 0"
-      :medias="medias"
-      :isEditMode="false"
-      :toggleEnlargedImage="toggleEnlargedImage"
-    />
+  <v-container fluid :style="album ? 'background-color:' + album.backgroundColor : ''">
+    <v-progress-circular v-if="isLoading" indeterminate></v-progress-circular>
+    <MediaSlider v-if="album" :medias="album.medias" :isEditMode="false" :toggleEnlargedImage="toggleEnlargedImage" />
     <div v-if="isNotFound">Not found</div>
-    <ImageZoom v-if="enlargedImage" :image="enlargedImage" :toggleEnlargedImage="toggleEnlargedImage" />
+    <ImageZoom
+      v-if="enlargedImage"
+      :image="enlargedImage"
+      :toggleEnlargedImage="toggleEnlargedImage"
+      :textColor="album.textColor"
+    />
   </v-container>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
-import { Media } from "@/types/Media";
+import { Media } from "../types/Media";
+import { Album } from "../types/Album";
 import MediaSlider from "../components/MediaSlider.vue";
 import ImageZoom from "../components/ImageZoom.vue";
 import axios from "axios";
@@ -23,7 +24,7 @@ export default defineComponent({
   name: "Album",
   components: { MediaSlider, ImageZoom },
   setup() {
-    const medias = ref<Media[]>([]);
+    const album = ref<Album | null>(null);
     const isLoading = ref(true);
     const isNotFound = ref(false);
     const { enlargedImage, toggleEnlargedImage } = useEnlargedImage();
@@ -37,7 +38,8 @@ export default defineComponent({
       axios
         .get(baseURL + "api/medias", { params: { id } })
         .then((res) => {
-          medias.value = res.data.medias;
+          album.value = res.data.album;
+          console.log(album.value);
           isLoading.value = false;
         })
         .catch(() => {
@@ -46,7 +48,7 @@ export default defineComponent({
           isLoading.value = false;
         });
     });
-    return { medias, isLoading, isNotFound, enlargedImage, toggleEnlargedImage };
+    return { album, isLoading, isNotFound, enlargedImage, toggleEnlargedImage };
   }
 });
 

@@ -1,5 +1,5 @@
 <template>
-  <v-app @dragover.prevent @drop.prevent :theme="theme" backgroundColor="background">
+  <v-app @dragover.prevent @drop.prevent>
     <v-main>
       <RouterView />
     </v-main>
@@ -8,14 +8,10 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { theme, toggleTheme } from "./lib/theme";
 import { RouterView } from "vue-router";
 
 export default defineComponent({
   name: "App",
-  components: { RouterView },
-  setup() {
-    return { theme, toggleTheme };
-  }
+  components: { RouterView }
 });
 </script>

@@ -1,19 +1,16 @@
 <template>
   <div v-if="isEditMode" class="button-group">
-    <v-btn class="ma-1" icon text color="background" @click="toggleEditmode">
-      <v-icon>mdi-view-carousel</v-icon>
+    <v-btn class="ma-1" :color="backgroundColor" icon text @click="toggleEditmode">
+      <v-icon :color="textColor">mdi-view-carousel</v-icon>
     </v-btn>
-    <v-btn class="ma-1" icon text color="background" @click="openFileInput">
-      <v-icon>mdi-plus-box</v-icon>
+    <v-btn class="ma-1" :color="backgroundColor" icon text @click="openFileInput">
+      <v-icon :color="textColor">mdi-plus-box</v-icon>
     </v-btn>
-    <v-btn class="ma-1" v-if="theme === 'dark'" icon text color="background" @click="toggleTheme">
-      <v-icon>mdi-lightbulb-on</v-icon>
+    <v-btn class="ma-1" :color="backgroundColor" icon text @click="toggleColorPickerOpen">
+      <v-icon :color="textColor"> mdi-palette</v-icon>
     </v-btn>
-    <v-btn class="ma-1" v-if="theme === 'light'" icon text color="background" @click="toggleTheme">
-      <v-icon>mdi-lightbulb-off</v-icon>
-    </v-btn>
-    <v-btn class="ma-1" icon text color="background" @click="openShareDialog" :disabled="isShareDialogOpen">
-      <v-icon>mdi-share</v-icon>
+    <v-btn class="ma-1" :color="backgroundColor" icon text @click="openShareDialog" :disabled="isShareDialogOpen">
+      <v-icon :color="textColor">mdi-share</v-icon>
     </v-btn>
     <input type="file" accept="image/*, video/*" hidden id="media-input" @change="handleMediaInput" multiple />
   </div>
@@ -38,20 +35,24 @@ export default defineComponent({
       type: Function as PropType<() => void>,
       required: true
     },
-    toggleTheme: {
-      type: Function as PropType<() => void>,
-      required: true
-    },
-    theme: {
-      type: String,
-      required: true
-    },
     openShareDialog: {
       type: Function as PropType<() => void>,
       required: true
     },
     isShareDialogOpen: {
       type: Boolean,
+      required: true
+    },
+    toggleColorPickerOpen: {
+      type: Function as PropType<() => void>,
+      required: true
+    },
+    backgroundColor: {
+      type: String,
+      required: true
+    },
+    textColor: {
+      type: String,
       required: true
     }
   },

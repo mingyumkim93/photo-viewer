@@ -1,6 +1,6 @@
 <template>
   <!-- TODO: use v-snackbar component once Vuetify 3 supports it -->
-  <v-card :color="toast.type" class="mt-2 d-flex align-center" elevation="20">
+  <v-card :color="toast.type" class="mt-2 d-flex align-center">
     <v-card-text>
       {{ toast.text }}
     </v-card-text>

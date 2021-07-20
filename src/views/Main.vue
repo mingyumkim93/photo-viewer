@@ -1,25 +1,31 @@
 <template>
-  <v-container @drop="handleMediaDragAndDrop">
-    <v-btn class="exit-button" v-if="!isEditMode" icon text @click="toggleEditmode" color="background">
-      <v-icon>mdi-close</v-icon>
+  <v-container @drop="handleMediaDragAndDrop" fluid :style="'background-color:' + backgroundColor">
+    <v-btn class="exit-button" v-if="!isEditMode" icon text @click="toggleEditmode" :color="backgroundColor">
+      <v-icon :color="textColor">mdi-close</v-icon>
     </v-btn>
     <MediaSlider
       :medias="medias"
       :removeMedia="removeMedia"
       :isEditMode="isEditMode"
       :toggleEnlargedImage="toggleEnlargedImage"
-      :theme="theme"
+      :textColor="textColor"
     />
     <Controls
       :handleMediaInput="handleMediaInput"
       :isEditMode="isEditMode"
       :toggleEditmode="toggleEditmode"
-      :toggleTheme="toggleTheme"
-      :theme="theme"
       :openShareDialog="openShareDialog"
       :isShareDialogOpen="isShareDialogOpen"
+      :toggleColorPickerOpen="toggleColorPickerOpen"
+      :backgroundColor="backgroundColor"
+      :textColor="textColor"
     />
-    <ImageZoom v-if="enlargedImage" :image="enlargedImage" :toggleEnlargedImage="toggleEnlargedImage" />
+    <ImageZoom
+      v-if="enlargedImage"
+      :image="enlargedImage"
+      :toggleEnlargedImage="toggleEnlargedImage"
+      :textColor="textColor"
+    />
     <ShareDialog
       :isShareDialogOpen="isShareDialogOpen"
       :albumURL="albumURL"
@@ -27,17 +33,26 @@
       :shareAlbum="shareAlbum"
       :medias="medias"
     />
+    <ColorPicker
+      v-if="isColorPickerOpen"
+      :backgroundColor="backgroundColor"
+      :textColor="textColor"
+      :setBackgroundColor="setBackgroundColor"
+      :setTextColor="setTextColor"
+      :toggleColorPickerOpen="toggleColorPickerOpen"
+    />
     <ToastGroup :toasts="toasts" :removeToastMessage="removeToastMessage" />
   </v-container>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType } from "vue";
+import { defineComponent, ref, Ref } from "vue";
 import MediaSlider from "../components/MediaSlider.vue";
 import Controls from "../components/Controls.vue";
 import ImageZoom from "../components/ImageZoom.vue";
 import ShareDialog from "../components/ShareDialog.vue";
 import ToastGroup from "../components/ToastGroup.vue";
+import ColorPicker from "../components/ColorPicker.vue";
 import { Media } from "../types/Media";
 import { MediaType } from "../types/MediaType";
 import { Album } from "../types/Album";
@@ -49,23 +64,19 @@ import storage from "../lib/storage";
 
 export default defineComponent({
   name: "Main",
-  components: { MediaSlider, Controls, ImageZoom, ShareDialog, ToastGroup },
-  props: {
-    toggleTheme: {
-      type: Function as PropType<() => void>,
-      required: true
-    },
-    theme: {
-      type: String,
-      required: true
-    }
-  },
+  components: { MediaSlider, Controls, ImageZoom, ShareDialog, ToastGroup, ColorPicker },
   setup() {
     const { medias, handleMediaInput, handleMediaDragAndDrop, removeMedia } = useMedias();
     const { toasts, addToastMessage, removeToastMessage } = useToast();
-    const { isShareDialogOpen, albumURL, openShareDialog, closeShareDialog, shareAlbum } = useShare(addToastMessage);
     const { isEditMode, toggleEditmode } = useEditMode();
     const { enlargedImage, toggleEnlargedImage } = useEnlargedImage();
+    const { isColorPickerOpen, backgroundColor, textColor, toggleColorPickerOpen, setBackgroundColor, setTextColor } =
+      useColorPicker();
+    const { isShareDialogOpen, albumURL, openShareDialog, closeShareDialog, shareAlbum } = useShare(
+      addToastMessage,
+      backgroundColor,
+      textColor
+    );
 
     return {
       medias,
@@ -83,7 +94,13 @@ export default defineComponent({
       shareAlbum,
       toasts,
       addToastMessage,
-      removeToastMessage
+      removeToastMessage,
+      isColorPickerOpen,
+      backgroundColor,
+      textColor,
+      toggleColorPickerOpen,
+      setBackgroundColor,
+      setTextColor
     };
   }
 });
@@ -103,7 +120,9 @@ function useMedias() {
 
   function handleMediaDragAndDrop(e: DragEvent) {
     if (e.dataTransfer && e.dataTransfer.files.length > 0) {
-      const files = [...e.dataTransfer.files];
+      const files = [...e.dataTransfer.files].filter(
+        (file) => file.type.includes("image") || file.type.includes("video")
+      );
       addMedias(files);
     }
   }
@@ -152,8 +171,12 @@ function useSampleImages() {
   return { SAMPLE_IMAGES };
 }
 
-// eslint-disable-next-line no-unused-vars
-function useShare(addToastMessage: (type: ToastType, text: string) => void) {
+function useShare(
+  // eslint-disable-next-line no-unused-vars
+  addToastMessage: (type: ToastType, text: string) => void,
+  backgroundColor: Ref<string>,
+  textColor: Ref<string>
+) {
   const isShareDialogOpen = ref(false);
   const albumId = ref<string>("");
   const albumURL = ref<string>("");
@@ -175,7 +198,9 @@ function useShare(addToastMessage: (type: ToastType, text: string) => void) {
     const album: Album = {
       id: albumId.value,
       medias: mediasAfterUpload,
-      createdAt: new Date()
+      createdAt: new Date(),
+      backgroundColor: backgroundColor.value,
+      textColor: textColor.value
     };
 
     return axios
@@ -249,6 +274,26 @@ function useEnlargedImage() {
   }
 
   return { enlargedImage, toggleEnlargedImage };
+}
+
+function useColorPicker() {
+  const isColorPickerOpen = ref(false);
+  const backgroundColor = ref("#000000");
+  const textColor = ref("#FFFFFF");
+
+  function setBackgroundColor(e: InputEvent) {
+    backgroundColor.value = (e.target as HTMLInputElement).value;
+  }
+
+  function setTextColor(e: InputEvent) {
+    textColor.value = (e.target as HTMLInputElement).value;
+  }
+
+  function toggleColorPickerOpen() {
+    isColorPickerOpen.value = !isColorPickerOpen.value;
+  }
+
+  return { isColorPickerOpen, backgroundColor, textColor, toggleColorPickerOpen, setBackgroundColor, setTextColor };
 }
 </script>
 

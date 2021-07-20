@@ -1,7 +1,7 @@
 <template>
   <v-card width="70%" @dblclick="close" class="image-zoom-container">
     <v-img :src="image.url" />
-    <v-btn icon text @click="close"><v-icon>mdi-close</v-icon></v-btn>
+    <v-btn icon text @click="close"><v-icon :color="textColor">mdi-close</v-icon></v-btn>
   </v-card>
 </template>
 
@@ -19,6 +19,10 @@ export default defineComponent({
     toggleEnlargedImage: {
       // eslint-disable-next-line no-unused-vars
       type: Function as PropType<(image: Media) => void>,
+      required: true
+    },
+    textColor: {
+      type: String,
       required: true
     }
   },
