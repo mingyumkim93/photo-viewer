@@ -7,6 +7,14 @@
     <v-spacer></v-spacer>
     <div class="mr-2">
       <v-btn :color="toast.type" text @click="handleClose"> Close </v-btn>
+      <v-btn
+        v-if="toast.secondButtonHandler && toast.secondButtonText"
+        :color="toast.type"
+        text
+        @click="toast.secondButtonHandler"
+      >
+        {{ toast.secondButtonText }}
+      </v-btn>
     </div>
   </v-card>
 </template>

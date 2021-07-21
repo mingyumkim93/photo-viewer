@@ -173,7 +173,7 @@ function useSampleImages() {
 
 function useShare(
   // eslint-disable-next-line no-unused-vars
-  addToastMessage: (type: ToastType, text: string) => void,
+  addToastMessage: (type: ToastType, text: string, secondButtonText?: string, secondButtonHandler?: Function) => void,
   backgroundColor: Ref<string>,
   textColor: Ref<string>
 ) {
@@ -205,8 +205,12 @@ function useShare(
 
     return axios
       .post("api/medias", { album })
-      .then(() => {
-        addToastMessage(ToastType.Success, "Your album is created");
+      .then((res) => {
+        const albumURL = window.location.href + "album/" + res.data.albumId;
+        function moveToAlbum() {
+          window.open(albumURL);
+        }
+        addToastMessage(ToastType.Success, "Your album is created", "Move to album", moveToAlbum);
       })
       .catch(() => {
         addToastMessage(ToastType.Error, "Something went wrong");
@@ -245,9 +249,9 @@ function useToast() {
     return id;
   }
 
-  function addToastMessage(type: ToastType, text: string) {
+  function addToastMessage(type: ToastType, text: string, secondButtonText?: string, secondButtonHandler?: Function) {
     const id = getNextToastId();
-    const toast: Toast = { id, type, text };
+    const toast: Toast = { id, type, text, secondButtonText, secondButtonHandler };
     toasts.value = [...toasts.value, toast];
   }
 

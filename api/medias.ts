@@ -9,7 +9,7 @@ export default async function medias(req: VercelRequest, res: VercelResponse) {
     const { album } = req.body;
     try {
       await collection.insertOne(album);
-      res.status(200).json({ status: "ok" });
+      res.status(200).json({ status: "ok", albumId: album.id });
     } catch (err) {
       res.status(500).json({ status: "fail" });
     }

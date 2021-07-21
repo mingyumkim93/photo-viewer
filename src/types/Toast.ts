@@ -4,4 +4,6 @@ export interface Toast {
   id: number;
   type: ToastType;
   text: string;
+  secondButtonText?: string;
+  secondButtonHandler?: Function;
 }
