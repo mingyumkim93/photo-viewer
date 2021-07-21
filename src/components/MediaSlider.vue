@@ -39,10 +39,10 @@ import "swiper/components/effect-coverflow/effect-coverflow.min.css";
 import { defineComponent, PropType } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import SwiperCore, { EffectCoverflow } from "swiper/core";
-import Photo from "./Photo.vue";
-import Video from "./Video.vue";
-import { Media } from "../types/Media";
-import { MediaType } from "../types/MediaType";
+import Photo from "@/components/Photo.vue";
+import Video from "@/components/Video.vue";
+import { Media } from "@/types/Media";
+import { MediaType } from "@/types/MediaType";
 
 SwiperCore.use([EffectCoverflow]);
 

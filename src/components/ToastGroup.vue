@@ -6,8 +6,8 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import { Toast } from "../types/Toast";
-import ToastMessage from "./ToastMessage.vue";
+import { Toast } from "@/types/Toast";
+import ToastMessage from "@/components/ToastMessage.vue";
 
 export default defineComponent({
   name: "ToastGroup",

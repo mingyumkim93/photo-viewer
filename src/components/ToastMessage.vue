@@ -13,7 +13,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import { Toast } from "../types/Toast";
+import { Toast } from "@/types/Toast";
 
 export default defineComponent({
   name: "ToastGroup",

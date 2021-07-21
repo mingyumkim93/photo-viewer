@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, watch } from "vue";
-import { Media } from "../types/Media";
+import { Media } from "@/types/Media";
 
 export default defineComponent({
   name: "Photo",

@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref } from "vue";
-import { Media } from "../types/Media";
+import { Media } from "@/types/Media";
 
 export default defineComponent({
   name: "MainViewer",

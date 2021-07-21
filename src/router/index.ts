@@ -1,6 +1,6 @@
 import { createWebHistory, createRouter, RouteRecordRaw } from "vue-router";
-import Main from "../views/Main.vue";
-import Album from "../views/Album.vue";
+import Main from "@/views/Main.vue";
+import Album from "@/views/Album.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {

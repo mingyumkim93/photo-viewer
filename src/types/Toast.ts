@@ -1,4 +1,4 @@
-import { ToastType } from "./ToastType";
+import { ToastType } from "@/types/ToastType";
 
 export interface Toast {
   id: number;

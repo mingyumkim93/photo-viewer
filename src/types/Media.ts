@@ -1,4 +1,4 @@
-import { MediaType } from "./MediaType";
+import { MediaType } from "@/types//MediaType";
 
 export interface Media {
   id: number;
