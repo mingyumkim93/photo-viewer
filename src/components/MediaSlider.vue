@@ -10,6 +10,7 @@
       modifier: 1,
       slideShadows: true
     }"
+    @swiper="onSwiper"
   >
     <SwiperSlide v-for="media in medias" :key="media.id" v-slot="{ isActive }">
       <Photo
@@ -36,7 +37,8 @@
 import "swiper/swiper.scss";
 import "swiper/components/effect-coverflow/effect-coverflow.min.css";
 
-import { defineComponent, PropType } from "vue";
+import { defineComponent, PropType, ref, watch, nextTick } from "vue";
+import SwiperType from "swiper";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import SwiperCore, { EffectCoverflow } from "swiper/core";
 import Photo from "@/components/Photo.vue";
@@ -73,8 +75,21 @@ export default defineComponent({
       required: true
     }
   },
-  setup() {
-    return { MediaType };
+  setup(props) {
+    const mySwiper = ref<SwiperType | null>(null);
+    function onSwiper(swiper: SwiperType) {
+      mySwiper.value = swiper;
+    }
+
+    watch(
+      () => props.medias,
+      async () => {
+        await nextTick();
+        mySwiper.value?.slideTo(props.medias.length);
+      }
+    );
+
+    return { MediaType, onSwiper };
   }
 });
 </script>
