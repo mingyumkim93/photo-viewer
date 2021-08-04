@@ -22,7 +22,10 @@ import axios from "axios";
 
 export default defineComponent({
   name: "Album",
-  components: { MediaSlider, ImageZoom },
+  components: {
+    MediaSlider,
+    ImageZoom
+  },
   setup() {
     const album = ref<Album | null>(null);
     const isLoading = ref(true);
@@ -48,7 +51,13 @@ export default defineComponent({
           isLoading.value = false;
         });
     });
-    return { album, isLoading, isNotFound, enlargedImage, toggleEnlargedImage };
+    return {
+      album,
+      isLoading,
+      isNotFound,
+      enlargedImage,
+      toggleEnlargedImage
+    };
   }
 });
 
@@ -59,7 +68,10 @@ function useEnlargedImage() {
     enlargedImage.value = enlargedImage.value ? null : image;
   }
 
-  return { enlargedImage, toggleEnlargedImage };
+  return {
+    enlargedImage,
+    toggleEnlargedImage
+  };
 }
 </script>
 <style scoped>
