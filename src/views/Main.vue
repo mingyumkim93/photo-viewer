@@ -46,7 +46,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref } from "vue";
+import { defineComponent, ref, Ref, onBeforeMount, computed } from "vue";
+import { mediaStore } from "@/store/mediaStore";
+import { colorStore } from "@/store/colorStore";
 import MediaSlider from "../components/MediaSlider.vue";
 import Controls from "../components/Controls.vue";
 import ImageZoom from "../components/ImageZoom.vue";
@@ -78,6 +80,11 @@ export default defineComponent({
       textColor
     );
 
+    onBeforeMount(async () => {
+      await mediaStore.init();
+      await colorStore.init();
+    });
+
     return {
       medias,
       handleMediaInput,
@@ -106,8 +113,7 @@ export default defineComponent({
 });
 
 function useMedias() {
-  const { SAMPLE_IMAGES } = useSampleImages();
-  const medias = ref<Media[]>(SAMPLE_IMAGES);
+  const medias = computed<Media[]>(() => mediaStore.getState().medias);
 
   function handleMediaInput(e: Event) {
     const input = e.target as HTMLInputElement;
@@ -139,36 +145,16 @@ function useMedias() {
         file
       };
     });
-    medias.value = [...medias.value, ...newMedias];
+    // medias.value = [...medias.value, ...newMedias];
+    mediaStore.addMedias(newMedias);
   }
 
   function removeMedia(id: number) {
-    medias.value = medias.value.filter((media) => media.id !== id);
+    // medias.value = medias.value.filter((media) => media.id !== id);
+    mediaStore.removeMedia(id);
   }
 
   return { medias, handleMediaInput, handleMediaDragAndDrop, removeMedia };
-}
-
-function useSampleImages() {
-  const SAMPLE_IMAGES: Media[] = [
-    {
-      id: 1,
-      url: "https://images.unsplash.com/photo-1481349518771-20055b2a7b24?ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cmFuZG9tfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80",
-      type: MediaType.Image
-    },
-    {
-      id: 2,
-      url: "https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/minimalist-orange-armando-borges.jpg",
-      type: MediaType.Image
-    },
-    {
-      id: 3,
-      url: "https://images.unsplash.com/photo-1494253109108-2e30c049369b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTB8fHJhbmRvbXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80",
-      type: MediaType.Image
-    }
-  ];
-
-  return { SAMPLE_IMAGES };
 }
 
 function useShare(
@@ -282,15 +268,17 @@ function useEnlargedImage() {
 
 function useColorPicker() {
   const isColorPickerOpen = ref(false);
-  const backgroundColor = ref("#000000");
-  const textColor = ref("#FFFFFF");
+  const backgroundColor = computed(() => colorStore.getState().backgroundColor);
+  const textColor = computed(() => colorStore.getState().textColor);
 
   function setBackgroundColor(e: InputEvent) {
-    backgroundColor.value = (e.target as HTMLInputElement).value;
+    // backgroundColor.value = (e.target as HTMLInputElement).value;
+    colorStore.setBackgroundColor((e.target as HTMLInputElement).value);
   }
 
   function setTextColor(e: InputEvent) {
-    textColor.value = (e.target as HTMLInputElement).value;
+    // textColor.value = (e.target as HTMLInputElement).value;
+    colorStore.setTextColor((e.target as HTMLInputElement).value);
   }
 
   function toggleColorPickerOpen() {
